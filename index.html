@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Fitness Tracker</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f4f4f4;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        text-align: center;
+    }
+    .exercise-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    .exercise-item {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+    .exercise-item:hover {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .exercise-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .exercise-details {
+        font-size: 14px;
+    }
+    .progress-bar {
+        background-color: #e0e0e0;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    .progress {
+        background-color: #007bff;
+        border-radius: 5px;
+        height: 20px;
+    }
+    .set-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    .set-item {
+        margin-top: 10px;
+    }
+    .set-item input[type="number"] {
+        width: 50px;
+        margin-right: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>My Fitness Tracker</h1>
+    
+    <h2>Today's Workout</h2>
+    <ul class="exercise-list" id="exerciseList">
+        <!-- Exercises will be dynamically added here -->
+    </ul>
+    
+    <h2>Log Your Workout</h2>
+    <form id="logWorkoutForm">
+        <label for="exerciseName">Exercise Name:</label>
+        <input type="text" id="exerciseName" name="exerciseName" required>
+        
+        <div id="exerciseSets">
+            <!-- Sets will be dynamically added here -->
+        </div>
+        
+        <button type="button" onclick="addSet()">Add Set</button>
+        <button type="button" onclick="addExercise()">Add Exercise</button>
+        
+        <input type="submit" value="Log Workout">
+    </form>
+    
+    <h2>Workout History</h2>
+    <ul id="workoutHistory">
+        <!-- Logged workouts will be displayed here -->
+    </ul>
+</div>
+
+<script>
+function addSet() {
+    const exerciseSets = document.getElementById('exerciseSets');
+    
+    const setItem = document.createElement('div');
+    setItem.classList.add('set-item');
+    
+    const setNumber = document.createElement('input');
+    setNumber.type = 'number';
+    setNumber.name = 'sets[]';
+    setNumber.min = '1';
+    setNumber.required = true;
+    setNumber.placeholder = 'Sets';
+    
+    const repNumber = document.createElement('input');
+    repNumber.type = 'number';
+    repNumber.name = 'reps[]';
+    repNumber.min = '1';
+    repNumber.required = true;
+    repNumber.placeholder = 'Reps';
+    
+    setItem.appendChild(setNumber);
+    setItem.appendChild(repNumber);
+    
+    exerciseSets.appendChild(setItem);
+}
+
+function addExercise() {
+    const exerciseList = document.getElementById('exerciseList');
+    const exerciseName = document.getElementById('exerciseName').value.trim();
+    if (!exerciseName) return;
+
+    const exerciseItem = document.createElement('li');
+    exerciseItem.classList.add('exercise-item');
+
+    const exerciseTitle = document.createElement('div');
+    exerciseTitle.classList.add('exercise-title');
+    exerciseTitle.textContent = exerciseName;
+
+    const exerciseSets = document.createElement('ul');
+    exerciseSets.classList.add('set-list');
+    exerciseSets.innerHTML = document.getElementById('exerciseSets').innerHTML;
+
+    exerciseItem.appendChild(exerciseTitle);
+    exerciseItem.appendChild(exerciseSets);
+
+    exerciseList.appendChild(exerciseItem);
+
+    // Clear input fields
+    document.getElementById('exerciseName').value = '';
+    document.getElementById('exerciseSets').innerHTML = '';
+}
+
+document.getElementById('logWorkoutForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const workoutHistory = document.getElementById('workoutHistory');
+    const workout = document.createElement('li');
+    workout.innerHTML = '<strong>Workout:</strong><ul>';
+
+    const exercises = document.querySelectorAll('.exercise-item');
+    exercises.forEach(function(exercise) {
+        const exerciseName = exercise.querySelector('.exercise-title').textContent;
+        workout.innerHTML += `<li>${exerciseName}<ul>`;
+
+        const sets = exercise.querySelectorAll('.set-item');
+        sets.forEach(function(set) {
+            const setCount = set.querySelector('input[name="sets[]"]').value;
+            const repCount = set.querySelector('input[name="reps[]"]').value;
+            workout.innerHTML += `<li>Sets: ${setCount}, Reps: ${repCount}</li>`;
+        });
+
+        workout.innerHTML += `</ul></li>`;
+    });
+
+    workout.innerHTML += '</ul>';
+    workoutHistory.appendChild(workout);
+
+    // Clear today's workout
+    document.getElementById('exerciseList').innerHTML = '';
+
+    // Clear log workout form
+    document.getElementById('logWorkoutForm').reset();
+});
+</script>
+
+</body>
+</html>
