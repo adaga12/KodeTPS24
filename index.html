@@ -99,8 +99,14 @@
 
 <script>
 function addSet() {
+    console.log("Adding a new set...");  // Debugging log
     const exerciseSets = document.getElementById('exerciseSets');
     
+    if (!exerciseSets) {
+        console.error("Failed to find the exerciseSets element!"); // Error log if not found
+        return;
+    }
+
     const setItem = document.createElement('div');
     setItem.classList.add('set-item');
     
@@ -110,18 +116,19 @@ function addSet() {
     setNumber.min = '1';
     setNumber.required = true;
     setNumber.placeholder = 'Sets';
-    
+
     const repNumber = document.createElement('input');
     repNumber.type = 'number';
     repNumber.name = 'reps[]';
     repNumber.min = '1';
     repNumber.required = true;
     repNumber.placeholder = 'Reps';
-    
+
     setItem.appendChild(setNumber);
     setItem.appendChild(repNumber);
-    
+
     exerciseSets.appendChild(setItem);
+    console.log("Set added.");  // Confirmation log
 }
 
 function addExercise() {
